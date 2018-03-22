@@ -2,9 +2,7 @@ import requests
 import setting
 import time
 import xlwt
-import datetime
 from parse import Parse
-from statistical import formatJobs
 
 
 def getInfo(url, data):
@@ -38,8 +36,6 @@ def processInfo(info, data, city):
     """
     try:
         ## 统计写入数据库
-        formatJobs(info, data['kd'], city)
-
         excelTabel = xlwt.Workbook()  # 创建excel对象
         sheet1 = excelTabel.add_sheet('lagou', cell_overwrite_ok=True)
         sheet1.write(0, 0, '公司名')  # 公司名
