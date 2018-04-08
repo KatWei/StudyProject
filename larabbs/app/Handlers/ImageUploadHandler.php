@@ -2,6 +2,7 @@
 
 namespace App\Handlers;
 
+use Image;
 
 class ImageUploadHandler
 {
@@ -44,5 +45,24 @@ class ImageUploadHandler
         return [
             'path' => config('app.url') . "/$folder_name/$filename"
         ];
+    }
+
+    public function reduceSize($file_path, $max_width)
+    {
+        // 先实例化，传参是文件的磁盘物理路径
+        $image = Image::make($file_path);
+
+        // 进行大小调整的操作
+        $image->resize($max_width, null, function ($constraint) {
+
+            // 设定宽度是 $max_width，高度等比例双方缩放
+            $constraint->aspectRatio();
+
+            // 防止裁图时图片尺寸变大
+            $constraint->upsize();
+        });
+
+        // 对图片修改后进行保存
+        $image->save();
     }
 }
