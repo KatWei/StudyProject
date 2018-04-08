@@ -62,7 +62,7 @@ class TopicsController extends Controller
 	    $topic->fill($request->all());
 	    $topic->user_id = Auth::id();
 		$topic->save();
-		return redirect()->route('topics.show', $topic->id)->with('message', 'Created successfully.');
+		return redirect()->route('topics.show', $topic->id)->with('success', '创建话题成功！');
 	}
 
     /**
@@ -73,7 +73,8 @@ class TopicsController extends Controller
     public function edit(Topic $topic)
 	{
         $this->authorize('update', $topic);
-		return view('topics.create_and_edit', compact('topic'));
+        $categories = Category::all();
+		return view('topics.create_and_edit', compact('topic', 'categories'));
 	}
 
     /**
@@ -87,7 +88,7 @@ class TopicsController extends Controller
 		$this->authorize('update', $topic);
 		$topic->update($request->all());
 
-		return redirect()->route('topics.show', $topic->id)->with('message', 'Updated successfully.');
+		return redirect()->route('topics.show', $topic->id)->with('success', '更新成功！');
 	}
 
     /**
@@ -100,10 +101,16 @@ class TopicsController extends Controller
 		$this->authorize('destroy', $topic);
 		$topic->delete();
 
-		return redirect()->route('topics.index')->with('message', 'Deleted successfully.');
+		return redirect()->route('topics.index')->with('success', '成功删除！');
 	}
 
 
+    /**
+     * @param \Illuminate\Http\Request         $request
+     * @param \App\Handlers\ImageUploadHandler $uploader
+     *
+     * @return array
+     */
     public function uploadImage(Request $request, ImageUploadHandler $uploader)
     {
         // 初始化返回数据，默认是失败的
