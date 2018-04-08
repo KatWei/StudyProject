@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Topic;
 use App\Http\Requests\TopicRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class TopicsController
@@ -41,18 +43,24 @@ class TopicsController extends Controller
      * @param \App\Models\Topic $topic
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */public function create(Topic $topic)
+     */
+    public function create(Topic $topic)
 	{
-		return view('topics.create_and_edit', compact('topic'));
+	    $categories = Category::all();
+		return view('topics.create_and_edit', compact('topic', 'categories'));
 	}
 
     /**
      * @param \App\Http\Requests\TopicRequest $request
+     * @param \App\Models\Topic               $topic
      *
      * @return \Illuminate\Http\RedirectResponse
-     */public function store(TopicRequest $request)
+     */
+    public function store(TopicRequest $request, Topic $topic)
 	{
-		$topic = Topic::create($request->all());
+	    $topic->fill($request->all());
+	    $topic->user_id = Auth::id();
+		$topic->save();
 		return redirect()->route('topics.show', $topic->id)->with('message', 'Created successfully.');
 	}
 
@@ -60,7 +68,8 @@ class TopicsController extends Controller
      * @param \App\Models\Topic $topic
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */public function edit(Topic $topic)
+     */
+    public function edit(Topic $topic)
 	{
         $this->authorize('update', $topic);
 		return view('topics.create_and_edit', compact('topic'));
@@ -71,7 +80,8 @@ class TopicsController extends Controller
      * @param \App\Models\Topic               $topic
      *
      * @return \Illuminate\Http\RedirectResponse
-     */public function update(TopicRequest $request, Topic $topic)
+     */
+    public function update(TopicRequest $request, Topic $topic)
 	{
 		$this->authorize('update', $topic);
 		$topic->update($request->all());
@@ -83,7 +93,8 @@ class TopicsController extends Controller
      * @param \App\Models\Topic $topic
      *
      * @return \Illuminate\Http\RedirectResponse
-     */public function destroy(Topic $topic)
+     */
+    public function destroy(Topic $topic)
 	{
 		$this->authorize('destroy', $topic);
 		$topic->delete();
