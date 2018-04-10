@@ -181,3 +181,15 @@ body {
     color: #b3b3b3;
   }
 }
+
+.notifications-badge {
+  margin-top: -1;
+
+  .badge-fade {
+    background-color: #e8e8e8;
+  }
+
+  .badge-hint {
+    background-color: #d15b47 !important;
+  }
+}
