@@ -15,6 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use Traits\ActiveUserHelper;
+    use Traits\LastActivedAtHelper;
     use HasRoles;
     use Notifiable {
      notify as protected laravelNotify;
@@ -102,4 +103,6 @@ class User extends Authenticatable
         $this->save();
         $this->unreadNotifications->markAsRead();
     }
+
+
 }
